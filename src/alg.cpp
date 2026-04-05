@@ -74,7 +74,7 @@ int countPairs3(int *arr, int len, int value) {
 
     for (int idx = 0; idx < len; ++idx) {
         need = value - arr[idx];
-        total += cbs(arr, len, need);
+        total += cbs(arr, size, value);
         if (need == value / 2) {
             total--;
         }
