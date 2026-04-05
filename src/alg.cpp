@@ -31,41 +31,42 @@ int cbs(int* arr, int size, int value) {
 }
 
 int countPairs1(int *arr, int len, int value) {
-  int total = 0;
-  for (int idx1 = 0; idx1 < len - 1; ++idx1) {
-      for (int idx2 = idx1 + 1; idx2 < len; ++idx2) {
-          if (arr[idx1] + arr[idx2] == value) {
-              total++;
-          }
-      }
-  }
-  return total;
+    int total = 0;
+    for (int idx1 = 0; idx1 < len - 1; ++idx1) {
+        for (int idx2 = idx1 + 1; idx2 < len; ++idx2) {
+            if (arr[idx1] + arr[idx2] == value) {
+                total++;
+            }
+        }
+    }
+    return total;
 }
 
 int countPairs2(int *arr, int len, int value) {
-  int result = 0;
-  int left = 0, right = len - 1;
+    int result = 0;
+    int left = 0, right = len - 1;
 
-  while (arr[right] > value) {
-      right--;
-  }
-  right++;
+    while (right >= 0 && arr[right] > value) {
+        right--;
+    }
+    if (right < 0) return 0;
+    right++;
 
-  int savedRight = right;
+    int savedRight = right;
 
-  do {
-      if ((left != right) && (arr[left] + arr[right] == value)) {
-          result++;
-          right--;
-      } else if (arr[left] + arr[right] < value) {
-          left++;
-          right = savedRight;
-      } else {
-          right--;
-      }
-  } while (left != savedRight);
+    do {
+        if ((left != right) && (arr[left] + arr[right] == value)) {
+            result++;
+            right--;
+        } else if (arr[left] + arr[right] < value) {
+            left++;
+            right = savedRight;
+        } else {
+            right--;
+        }
+    } while (left != savedRight);
 
-  return result / 2;
+    return result / 2;
 }
 
 int countPairs3(int *arr, int len, int value) {
@@ -74,7 +75,7 @@ int countPairs3(int *arr, int len, int value) {
 
     for (int idx = 0; idx < len; ++idx) {
         need = value - arr[idx];
-        total += cbs(arr, size, value);
+        total += cbs(arr, len, need);
         if (need == value / 2) {
             total--;
         }
