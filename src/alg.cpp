@@ -1,7 +1,7 @@
 // Copyright 2021 NNTU-CS
 
 int cbs(int* arr, int size, int value) {
-    int l = 0, r = size, m;
+    int l = 0, r = size, m = 0; 
     int firstPos, lastPos, result;
 
     while (l < r) {
@@ -35,7 +35,7 @@ int countPairs1(int *arr, int len, int value) {
     for (int idx1 = 0; idx1 < len - 1; ++idx1) {
         for (int idx2 = idx1 + 1; idx2 < len; ++idx2) {
             if (arr[idx1] + arr[idx2] == value) {
-                total++;
+                ++total;
             }
         }
     }
@@ -43,30 +43,41 @@ int countPairs1(int *arr, int len, int value) {
 }
 
 int countPairs2(int *arr, int len, int value) {
+    if (len < 2) return 0;
     int result = 0;
     int left = 0, right = len - 1;
 
-    while (right >= 0 && arr[right] > value) {
-        right--;
-    }
-    if (right < 0) return 0;
-    right++;
-
-    int savedRight = right;
-
-    do {
-        if ((left != right) && (arr[left] + arr[right] == value)) {
-            result++;
-            right--;
-        } else if (arr[left] + arr[right] < value) {
-            left++;
-            right = savedRight;
+    while (left < right) {
+        int sum = arr[left] + arr[right];
+        if (sum == value) {
+            if (arr[left] == arr[right]) {
+                
+                int cnt = right - left + 1;
+                result += cnt * (cnt - 1) / 2;
+                break;
+            } else {
+                int leftCount = 1, rightCount = 1;
+                
+                while (left + 1 < right && arr[left] == arr[left + 1]) {
+                    ++leftCount;
+                    ++left;
+                }
+                
+                while (right - 1 > left && arr[right] == arr[right - 1]) {
+                    ++rightCount;
+                    --right;
+                }
+                result += leftCount * rightCount;
+                ++left;
+                --right;
+            }
+        } else if (sum < value) {
+            ++left;
         } else {
-            right--;
+            --right;
         }
-    } while (left != savedRight);
-
-    return result / 2;
+    }
+    return result;
 }
 
 int countPairs3(int *arr, int len, int value) {
@@ -77,7 +88,7 @@ int countPairs3(int *arr, int len, int value) {
         need = value - arr[idx];
         total += cbs(arr, len, need);
         if (need == value / 2) {
-            total--;
+            --total;
         }
     }
 
