@@ -18,7 +18,8 @@ static int firstIndex(const int* arr, int left, int right, int value) {
     return (arr[res] == value) ? res : left;
 }
 
-// Находит индекс последнего вхождения value в подмассиве arr[left..right] или left-1, если значение не найдено.
+// Находит индекс последнего вхождения value в подмассиве arr[left..right] 
+// или left-1, если значение не найдено.
 static int lastIndex(const int* arr, int left, int right, int value) {
     int l = left, r = right;
     int res = left - 1;
@@ -49,7 +50,7 @@ int countPairs1(int *arr, int len, int value) {
 }
 
 // 2. Метод двух указателей
-int countPairs2(int *arr, int len, int value) {
+int countPairs3(int *arr, int len, int value) {
     if (len < 2) return 0;
     int left = 0;
     int right = len - 1;
@@ -62,7 +63,8 @@ int countPairs2(int *arr, int len, int value) {
         } else if (sum > value) {
             --right;
         } else { // sum == value
-            // Если все элементы между left и right равны, считаем число сочетаний из (right - left + 1) по 2
+            // Если все элементы между left и right равны, 
+            // считаем число сочетаний из (right - left + 1) по 2
             if (arr[left] == arr[right]) {
                 int n = right - left + 1;
                 pairs += n * (n - 1) / 2;
@@ -89,7 +91,7 @@ int countPairs2(int *arr, int len, int value) {
 }
 
 // 3. Бинарный поиск для каждого элемента
-int countPairs3(int *arr, int len, int value) {
+int countPairs2(int *arr, int len, int value) {
     int count = 0;
     for (int i = 0; i < len - 1; ++i) {
         int target = value - arr[i];
