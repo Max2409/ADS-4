@@ -2,7 +2,6 @@
 #include <algorithm>
 
 // Вспомогательные функции для бинарного поиска (countPairs3)
-// Находит индекс первого вхождения value в подмассиве arr[left..right] или left, если значение не найдено.
 static int firstIndex(const int* arr, int left, int right, int value) {
     int l = left, r = right;
     int res = left; // будет указывать на начало, если value отсутствует
@@ -36,7 +35,7 @@ static int lastIndex(const int* arr, int left, int right, int value) {
 }
 
 
-// 1. Полный перебор (O(n^2))
+// 1. Полный перебор
 int countPairs1(int *arr, int len, int value) {
     int count = 0;
     for (int i = 0; i < len - 1; ++i) {
@@ -49,7 +48,7 @@ int countPairs1(int *arr, int len, int value) {
     return count;
 }
 
-// 2. Метод двух указателей (O(n))
+// 2. Метод двух указателей
 int countPairs2(int *arr, int len, int value) {
     if (len < 2) return 0;
     int left = 0;
