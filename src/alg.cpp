@@ -1,96 +1,105 @@
 // Copyright 2021 NNTU-CS
+#include <algorithm>
 
-int cbs(int* arr, int size, int value) {
-    int l = 0, r = size, m = 0; 
-    int firstPos, lastPos, result;
-
-    while (l < r) {
-        m = (l + r) / 2;
-        if (value > arr[m]) {
-            l = m + 1;
+// Вспомогательные функции для бинарного поиска (countPairs3)
+// Находит индекс первого вхождения value в подмассиве arr[left..right] или left, если значение не найдено.
+static int firstIndex(const int* arr, int left, int right, int value) {
+    int l = left, r = right;
+    int res = left; // будет указывать на начало, если value отсутствует
+    while (l <= r) {
+        int mid = l + (r - l) / 2;
+        if (arr[mid] >= value) {
+            res = mid;
+            r = mid - 1;
         } else {
-            r = m;
+            l = mid + 1;
         }
     }
-    firstPos = l;
-
-    l = 0;
-    r = size;
-    while (l < r) {
-        m = (l + r) / 2;
-        if (value < arr[m]) {
-            r = m;
-        } else {
-            l = m + 1;
-        }
-    }
-    lastPos = r;
-
-    result = lastPos - firstPos;
-    return result;
+    // Если число не равно value, возвращаем left (что даст нулевое количество)
+    return (arr[res] == value) ? res : left;
 }
 
+// Находит индекс последнего вхождения value в подмассиве arr[left..right] или left-1, если значение не найдено.
+static int lastIndex(const int* arr, int left, int right, int value) {
+    int l = left, r = right;
+    int res = left - 1;
+    while (l <= r) {
+        int mid = l + (r - l) / 2;
+        if (arr[mid] <= value) {
+            res = mid;
+            l = mid + 1;
+        } else {
+            r = mid - 1;
+        }
+    }
+    return res;
+}
+
+
+// 1. Полный перебор (O(n^2))
 int countPairs1(int *arr, int len, int value) {
-    int total = 0;
-    for (int idx1 = 0; idx1 < len - 1; ++idx1) {
-        for (int idx2 = idx1 + 1; idx2 < len; ++idx2) {
-            if (arr[idx1] + arr[idx2] == value) {
-                ++total;
+    int count = 0;
+    for (int i = 0; i < len - 1; ++i) {
+        for (int j = i + 1; j < len; ++j) {
+            if (arr[i] + arr[j] == value) {
+                ++count;
             }
         }
     }
-    return total;
+    return count;
 }
 
+// 2. Метод двух указателей (O(n))
 int countPairs2(int *arr, int len, int value) {
     if (len < 2) return 0;
-    int result = 0;
-    int left = 0, right = len - 1;
+    int left = 0;
+    int right = len - 1;
+    int pairs = 0;
 
     while (left < right) {
         int sum = arr[left] + arr[right];
-        if (sum == value) {
+        if (sum < value) {
+            ++left;
+        } else if (sum > value) {
+            --right;
+        } else { // sum == value
+            // Если все элементы между left и right равны, считаем число сочетаний из (right - left + 1) по 2
             if (arr[left] == arr[right]) {
-                
-                int cnt = right - left + 1;
-                result += cnt * (cnt - 1) / 2;
+                int n = right - left + 1;
+                pairs += n * (n - 1) / 2;
                 break;
-            } else {
-                int leftCount = 1, rightCount = 1;
-                
-                while (left + 1 < right && arr[left] == arr[left + 1]) {
-                    ++leftCount;
-                    ++left;
-                }
-                
-                while (right - 1 > left && arr[right] == arr[right - 1]) {
-                    ++rightCount;
-                    --right;
-                }
-                result += leftCount * rightCount;
+            }
+            // Подсчитываем одинаковые элементы слева
+            int leftVal = arr[left];
+            int cntL = 0;
+            while (left < right && arr[left] == leftVal) {
+                ++cntL;
                 ++left;
+            }
+            // Подсчитываем одинаковые элементы справа
+            int rightVal = arr[right];
+            int cntR = 0;
+            while (left <= right && arr[right] == rightVal) {
+                ++cntR;
                 --right;
             }
-        } else if (sum < value) {
-            ++left;
-        } else {
-            --right;
+            pairs += cntL * cntR;
         }
     }
-    return result;
+    return pairs;
 }
 
+// 3. Бинарный поиск для каждого элемента
 int countPairs3(int *arr, int len, int value) {
-    int total = 0;
-    int need;
-
-    for (int idx = 0; idx < len; ++idx) {
-        need = value - arr[idx];
-        total += cbs(arr, len, need);
-        if (need == value / 2) {
-            --total;
+    int count = 0;
+    for (int i = 0; i < len - 1; ++i) {
+        int target = value - arr[i];
+        // Ищем target в правой части массива (индексы i+1 .. len-1)
+        int first = firstIndex(arr, i + 1, len - 1, target);
+        if (first > i && arr[first] == target) {
+            int last = lastIndex(arr, first, len - 1, target);
+            count += (last - first + 1);
         }
     }
-
-    return total / 2;
+    return count;
 }
