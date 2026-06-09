@@ -18,7 +18,7 @@ static int firstIndex(const int* arr, int left, int right, int value) {
     return (arr[res] == value) ? res : left;
 }
 
-// Находит индекс последнего вхождения value в подмассиве arr[left..right] 
+// Находит индекс последнего вхождения value в подмассиве arr[left..right]
 // или left-1, если значение не найдено.
 static int lastIndex(const int* arr, int left, int right, int value) {
     int l = left, r = right;
@@ -63,7 +63,7 @@ int countPairs3(int *arr, int len, int value) {
         } else if (sum > value) {
             --right;
         } else { // sum == value
-            // Если все элементы между left и right равны, 
+            // Если все элементы между left и right равны,
             // считаем число сочетаний из (right - left + 1) по 2
             if (arr[left] == arr[right]) {
                 int n = right - left + 1;
